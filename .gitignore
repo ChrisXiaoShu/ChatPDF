@@ -6,3 +6,6 @@
 
 # Ignore .evn file
 .env
+
+# Ignore .vscode folder
+.vscode
