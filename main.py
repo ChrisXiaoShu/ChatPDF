@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from langchain.document_loaders import TextLoader, PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 load_dotenv()
 
@@ -14,3 +15,8 @@ def load_file(file_path) -> TextLoader or PyPDFLoader:
     if file_path.endswith(".txt") or file_path.endswith(".pdf"):
         return PyPDFLoader(file_path) or TextLoader(file_path)
     raise ValueError(f"File type not supported: {file_path}")
+
+# function pass Loadder and return splitter texts
+def split_text(loader: TextLoader or PyPDFLoader) -> list:
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunt_overlap=100)
+    return loader.load_and_split(splitter)
