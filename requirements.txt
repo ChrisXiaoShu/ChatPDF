@@ -2,3 +2,5 @@ langchain
 pypdf
 openai
 python-dotenv
+chromadb
+tiktoken
