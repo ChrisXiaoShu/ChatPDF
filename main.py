@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from langchain.document_loaders import TextLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Chroma
+from langchain.embeddings.openai import OpenAIEmbeddings
 
 load_dotenv()
 
@@ -20,3 +22,9 @@ def load_file(file_path) -> TextLoader or PyPDFLoader:
 def split_text(loader: TextLoader or PyPDFLoader) -> list:
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunt_overlap=100)
     return loader.load_and_split(splitter)
+
+# create emmbeding vectorstore by using opentAIEmbedding model from given text
+def create_embedding_vectorstore(texts: list) -> Chroma:
+    embedding_model = OpenAIEmbeddings()
+    return Chroma.from_documents(texts, embedding_model)
+
