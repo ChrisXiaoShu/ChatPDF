@@ -3,3 +3,6 @@
 
 # Ignore python version files
 *.python-version
+
+# Ignore .evn file
+.env
