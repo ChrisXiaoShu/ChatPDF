@@ -32,3 +32,23 @@ def create_embedding_vectorstore(texts: list) -> Chroma:
     embedding_model = OpenAIEmbeddings()
     return Chroma.from_documents(texts, embedding_model)
 
+def main():
+    # load file from user input
+    file_path = input("Enter file path: ")
+    loader = load_file(file_path)
+
+    # split text
+    texts = split_text(loader)
+
+    # create embedding vectorstore
+    vectorstore = create_embedding_vectorstore(texts)
+    
+    # start qa conversation
+    qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0), vectorstore.as_retriever())
+    while True:
+        question = input("Enter question: ")
+        answer = qa({"question": question, 'chat_history': []})
+        print('answer:', answer['answer'])
+    
+if __name__ == "__main__":
+    main()
