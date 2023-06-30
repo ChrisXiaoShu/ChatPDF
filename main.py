@@ -45,10 +45,12 @@ def main():
     
     # start qa conversation
     qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0), vectorstore.as_retriever())
+    chat_history = []
     while True:
         question = input("Enter question: ")
-        answer = qa({"question": question, 'chat_history': []})
+        answer = qa({"question": question, 'chat_history': chat_history})
         print('answer:', answer['answer'])
+        chat_history.append((question, answer['answer']))
     
 if __name__ == "__main__":
     main()
