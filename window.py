@@ -6,10 +6,10 @@ from langchain.chains import ConversationalRetrievalChain
 
 # Create the layout of the window
 layout = [
-    [sg.InputText("Enter your OpenAI API Key:", key="-KEY_TEXT-")],
+    [sg.Text("Enter your OpenAI API Key:")],
+    [sg.InputText(key="-KEY_TEXT-")],
     [sg.Text("Select a PDF file:")],
-    [sg.Input(key="-FILE-"), sg.FileBrowse(file_types=(("PDF Files", "*.pdf", "*.txt"),))],
-    [sg.Button("Upload"), sg.Button("Cancel")],
+    [sg.Input(key="-FILE-"), sg.FileBrowse(file_types=(("PDF Files", "*.pdf", "*.txt"),)), sg.Button("Upload")],
     [sg.Text("Chat History", font=("Arial", 12), key="-CHAT_HISTORY-", size=(60, 10), justification="left", auto_size_text=True, relief=sg.RELIEF_SUNKEN)],
     [sg.InputText(key="-INPUT-", size=(40, 1)), sg.Button("Send")]
 ]
