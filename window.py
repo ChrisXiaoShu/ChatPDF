@@ -4,11 +4,16 @@ import PySimpleGUI as sg
 layout = [
     [sg.Text("Select a PDF file:")],
     [sg.Input(key="-FILE-"), sg.FileBrowse(file_types=(("PDF Files", "*.pdf"),))],
-    [sg.Button("Upload"), sg.Button("Cancel")]
+    [sg.Button("Upload"), sg.Button("Cancel")],
+    [sg.Text("Chat History", font=("Arial", 12), key="-CHAT_HISTORY-", size=(60, 10), justification="left", auto_size_text=True)],
+    [sg.InputText(key="-INPUT-", size=(40, 1)), sg.Button("Send")]
 ]
 
 # Create the window
 window = sg.Window("PDF File Uploader", layout)
+
+# Chat history list
+chat_history = []
 
 # Event loop to process window events
 while True:
@@ -19,6 +24,11 @@ while True:
         pdf_file = values["-FILE-"]
         # Perform the upload or any further processing here
         print(f"Uploaded file: {pdf_file}")
+    elif event == "Send":
+        message = values["-INPUT-"]
+        chat_history.append(message)
+        window["-CHAT_HISTORY-"].update("\n".join(chat_history))
+        window["-INPUT-"].update("")
 
 # Close the window
 window.close()
