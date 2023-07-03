@@ -1,4 +1,7 @@
 import PySimpleGUI as sg
+from lib.util import create_embedding_vectorstore, load_file, split_text
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
 
 # Create the layout of the window
 layout = [
@@ -14,7 +17,9 @@ window = sg.Window("PDF File Uploader", layout)
 
 # Chat history list
 chat_history = []
+ui_history = []
 pdf_file = None
+qa = None
 
 # Event loop to process window events
 while True:
@@ -23,17 +28,30 @@ while True:
         break
     elif event == "Upload":
         pdf_file = values["-FILE-"]
-        # Perform the upload or any further processing here
-        print(f"Uploaded file: {pdf_file}")
+        # load file
+        loader = load_file(pdf_file)
+        # split text
+        texts = split_text(loader)
+        # create embedding vectorstore
+        vectorstore = create_embedding_vectorstore(texts)
+        qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0), vectorstore.as_retriever())
+        
     elif event == "Send":
         # raise alert if no pdf file uploaded
-        if pdf_file is None:    
+        if pdf_file is None or qa is None:    
             sg.popup("Please upload a PDF file first!")
             continue
         
-        message = values["-INPUT-"]
-        chat_history.append(message)
-        window["-CHAT_HISTORY-"].update("\n".join(chat_history))
+        question = values["-INPUT-"]
+    
+        answer = qa({"question": question, 'chat_history': chat_history})
+        
+        ui_history.append("Q: " + question)
+        ui_history.append("A: " + answer['answer'])
+        
+        chat_history.append((question, answer['answer']))
+        
+        window["-CHAT_HISTORY-"].update("\n".join(ui_history))
         window["-INPUT-"].update("")
 
 # Close the window
