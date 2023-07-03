@@ -1,3 +1,4 @@
+import os
 import PySimpleGUI as sg
 from lib.util import create_embedding_vectorstore, load_file, split_text
 from langchain.chat_models import ChatOpenAI
@@ -5,6 +6,7 @@ from langchain.chains import ConversationalRetrievalChain
 
 # Create the layout of the window
 layout = [
+    [sg.InputText("Enter your OpenAI API Key:", key="-KEY_TEXT-")],
     [sg.Text("Select a PDF file:")],
     [sg.Input(key="-FILE-"), sg.FileBrowse(file_types=(("PDF Files", "*.pdf"),))],
     [sg.Button("Upload"), sg.Button("Cancel")],
@@ -20,6 +22,7 @@ chat_history = []
 ui_history = []
 pdf_file = None
 qa = None
+api_key = None
 
 # Event loop to process window events
 while True:
@@ -27,6 +30,12 @@ while True:
     if event == sg.WINDOW_CLOSED or event == "Cancel":
         break
     elif event == "Upload":
+        api_key = values["-KEY_TEXT-"]
+        if api_key is None:
+            sg.popup("Please enter your OpenAI API Key!")
+            continue
+        os.environ["OPENAI_API_KEY"] = api_key
+
         pdf_file = values["-FILE-"]
         # load file
         loader = load_file(pdf_file)
