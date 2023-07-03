@@ -4,6 +4,33 @@ from lib.util import create_embedding_vectorstore, load_file, split_text
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
 
+def create_file_conversation_chain(api_key, file_path):
+    if api_key is None:
+        sg.popup("Please enter your OpenAI API Key!")
+        return None
+    if file_path is None:
+        sg.popup("Please upload a file first!")
+
+    os.environ["OPENAI_API_KEY"] = api_key
+
+    # load file
+    loader = load_file(file_path)
+    # split text
+    texts = split_text(loader)
+    # create embedding vectorstore
+    vectorstore = create_embedding_vectorstore(texts)
+    
+    return ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0), vectorstore.as_retriever())
+
+def question_processor(conversation_chain):
+    chat_history = []
+    def _processor(question):
+        answer = conversation_chain({"question": question, 'chat_history': chat_history})
+        chat_history.append((question, answer['answer']))
+        
+        return "\n".join([f"Q: {q}\nA: {a}" for q, a in chat_history])
+    return _processor
+
 # Create the layout of the window
 layout = [
     [sg.Text("Enter your OpenAI API Key:")],
@@ -15,14 +42,10 @@ layout = [
 ]
 
 # Create the window
-window = sg.Window("PDF File Uploader", layout)
+window = sg.Window("ChatPDF", layout)
 
-# Chat history list
-chat_history = []
-ui_history = []
-pdf_file = None
-qa = None
-api_key = None
+# Initialize variables
+processor = None
 
 # Event loop to process window events
 while True:
@@ -31,36 +54,20 @@ while True:
         break
     elif event == "Upload":
         api_key = values["-KEY_TEXT-"]
-        if api_key is None:
-            sg.popup("Please enter your OpenAI API Key!")
-            continue
-        os.environ["OPENAI_API_KEY"] = api_key
-
-        pdf_file = values["-FILE-"]
-        # load file
-        loader = load_file(pdf_file)
-        # split text
-        texts = split_text(loader)
-        # create embedding vectorstore
-        vectorstore = create_embedding_vectorstore(texts)
-        qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0), vectorstore.as_retriever())
+        file_name = values["-FILE-"]
+        qa_chain = create_file_conversation_chain(api_key, file_name)
+        processor = question_processor(qa_chain)
         
     elif event == "Send":
-        # raise alert if no pdf file uploaded
-        if pdf_file is None or qa is None:    
-            sg.popup("Please upload a PDF file first!")
+        # Raise an alert if no PDF file uploaded
+        if not processor:
+            sg.popup("Please init a qa processor by upload a file and enter your OpenAI API Key!")
             continue
         
         question = values["-INPUT-"]
-    
-        answer = qa({"question": question, 'chat_history': chat_history})
+        result = processor(question)
         
-        ui_history.append("Q: " + question)
-        ui_history.append("A: " + answer['answer'])
-        
-        chat_history.append((question, answer['answer']))
-        
-        window["-CHAT_HISTORY-"].update("\n".join(ui_history))
+        window["-CHAT_HISTORY-"].update(result)
         window["-INPUT-"].update("")
 
 # Close the window
