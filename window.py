@@ -14,6 +14,7 @@ window = sg.Window("PDF File Uploader", layout)
 
 # Chat history list
 chat_history = []
+pdf_file = None
 
 # Event loop to process window events
 while True:
@@ -25,6 +26,11 @@ while True:
         # Perform the upload or any further processing here
         print(f"Uploaded file: {pdf_file}")
     elif event == "Send":
+        # raise alert if no pdf file uploaded
+        if pdf_file is None:    
+            sg.popup("Please upload a PDF file first!")
+            continue
+        
         message = values["-INPUT-"]
         chat_history.append(message)
         window["-CHAT_HISTORY-"].update("\n".join(chat_history))
