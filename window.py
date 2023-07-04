@@ -37,12 +37,12 @@ layout = [
     [sg.InputText(key="-KEY_TEXT-")],
     [sg.Text("Select a PDF file:")],
     [sg.Input(key="-FILE-"), sg.FileBrowse(file_types=(("PDF Files", "*.pdf", "*.txt"),)), sg.Button("Upload")],
-    [sg.Text("Chat History", font=("Arial", 12), key="-CHAT_HISTORY-", size=(60, 10), justification="left", auto_size_text=True, relief=sg.RELIEF_SUNKEN)],
-    [sg.InputText(key="-INPUT-", size=(40, 1)), sg.Button("Send")]
+    [sg.Multiline(key="-ROLLER-", size=(100, 40), enable_events=True, autoscroll=True, reroute_stdout=True)],
+    [sg.InputText(key="-INPUT-", size=(90, 2)), sg.Button("Send")]
 ]
 
 # Create the window
-window = sg.Window("ChatPDF", layout)
+window = sg.Window("ChatPDF", layout, size=(700, 600))
 
 # Initialize variables
 processor = None
@@ -67,7 +67,7 @@ while True:
         question = values["-INPUT-"]
         result = processor(question)
         
-        window["-CHAT_HISTORY-"].update(result)
+        window["-ROLLER-"].update(result)
         window["-INPUT-"].update("")
 
 # Close the window
