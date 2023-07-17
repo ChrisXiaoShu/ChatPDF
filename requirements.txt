@@ -5,4 +5,4 @@ python-dotenv
 chromadb
 tiktoken
 PySimpleGUI==4.56.0
-chainlit
+chainlit==0.5.2

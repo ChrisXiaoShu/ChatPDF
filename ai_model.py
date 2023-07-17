@@ -44,7 +44,7 @@ AI:
         )
             
 class SummaryPreferenceAI(AIModel):
-    model = ChatOpenAI(temperature=0)
+    model = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
     template = """please summary the human preference from the following conversation in 繁體中文
 Current conversation:
 {history}
@@ -63,9 +63,9 @@ Current conversation:
 
 
 class RecommandAI(AIModel):
-    model = ChatOpenAI(temperature=0)
+    model = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
     template = """
-    please choice one of the cocktail from the menu below base on the human preference
+    please choice one of the cocktail from the menu below base on the human preference and reply in 繁體中文
     here is human preference:
     {preferences}
     
