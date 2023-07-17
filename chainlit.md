@@ -1,14 +1,16 @@
-# Welcome to Chainlit! 🚀🤖
+# Welcome to 慾室酒吧! 🚀🤖
 
-Hi there, Developer! 👋 We're excited to have you on board. Chainlit is a powerful tool designed to help you prototype, debug and share applications built on top of LLMs.
+歡迎來到慾室酒吧！非常抱歉太忙的時候人力可能有所不足，但我們訓練的 AI 服務生，應該可以幫助你解決一些問題 
 
-## Useful Links 🔗
+如果你們第一次使用，我將會引導你們，你們可以詢問AI小幫手
 
-- **Documentation:** Get started with our comprehensive [Chainlit Documentation](https://docs.chainlit.io) 📚
-- **Discord Community:** Join our friendly [Chainlit Discord](https://discord.gg/ZThrUxbAYw) to ask questions, share your projects, and connect with other developers! 💬
+- 什麼樣的酒適合今天的我
+- 介紹某一隻酒，包含他的基酒風味，整體感受
 
-We can't wait to see what you create with Chainlit! Happy coding! 💻😊
+## 妳可以跟我說
 
-## Welcome screen
-
-To modify the welcome screen, edit the `chainlit.md` file at the root of your project. If you do not want a welcome screen, just leave this file empty.
+1. 妳喜歡的口感
+2. 妳喜歡或不喜歡的酒種
+3. 妳喜歡什麼樣的口味
+4. 妳想要濃一點的還是淡一點的
+5. 也可以和我說明今天的心情如何唷

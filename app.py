@@ -22,19 +22,20 @@ def factory():
 
 @cl.action_callback("Summary Preference!")
 async def on_action(action):
+    await action.remove()
+    
     history = cl.user_session.get("history")
     summary_ai = SummaryPreferenceAI()
-    summary = summary_ai.run(history)
+    summary, prompt = summary_ai.run(history)
     
     cl.user_session.set("summary", summary)
     
-    # Optionally remove the action button from the chatbot user interface
-    await action.remove()
-    
-    await cl.Message(content=summary).send()
+    await cl.Message(content=summary, prompt=prompt).send()
 
 @cl.action_callback("Recommand Drink!")
 async def on_action(action):
+    await action.remove()
+    
     summary = cl.user_session.get("summary")
     if not summary:
         history = cl.user_session.get("history")
@@ -42,12 +43,9 @@ async def on_action(action):
         summary = summary_ai.run(history)
     
     recommand_ai = RecommandAI()
-    recommand = recommand_ai.run(summary)
+    recommand, prompt = recommand_ai.run(summary)
     
-    # Optionally remove the action button from the chatbot user interface
-    await action.remove()
-    
-    await cl.Message(content=recommand).send()
+    await cl.Message(content=recommand, prompt=prompt).send()
 
 @cl.langchain_postprocess
 async def postprocess(output: str):

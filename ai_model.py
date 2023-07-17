@@ -28,11 +28,11 @@ class BartenderAI(AIModel):
     model = ChatOpenAI(temperature=0)
 
     template = """The following is a friendly conversation between a human and an AI. The AI is a professional bartender and help human find a cocktail that suits. AI should guide human in choosing a cocktail that is tailored to its preferences. AI should understand human preferences based on human preferred texture, type of alcohol, taste, or personal characteristics. please don't recommend a particular cocktail to human. AI job is merely understand human preference. And don't ask too complex question make question simple and one at a time. 請用繁體中文與我對答案。 
-    Current conversation:
-    {history}
-    Human: {input}
-    AI:
-    """
+Current conversation:
+{history}
+Human: {input}
+AI:
+"""
 
     prompt = PromptTemplate(template=template, input_variables=["history", "input"])
     
@@ -46,9 +46,9 @@ class BartenderAI(AIModel):
 class SummaryPreferenceAI(AIModel):
     model = ChatOpenAI(temperature=0)
     template = """please summary the human preference from the following conversation in 繁體中文
-    Current conversation:
-    {history}
-    """
+Current conversation:
+{history}
+"""
     
     prompt = PromptTemplate(template=template, input_variables=["history"])
     
@@ -57,7 +57,9 @@ class SummaryPreferenceAI(AIModel):
     
     def run(self, conversation_history):
         chain = self.get_chain()
-        return chain.run({ 'history': conversation_history})
+        result = chain.run({ 'history': conversation_history})
+        prompt = self.prompt.format(history=conversation_history)
+        return result, prompt
 
 
 class RecommandAI(AIModel):
@@ -116,4 +118,4 @@ class RecommandAI(AIModel):
     
     def run(self, preferences):
         chain = self.get_chain()
-        return chain.run({ 'preferences': preferences})
+        return chain.run({ 'preferences': preferences}), self.prompt.format(preferences=preferences)
