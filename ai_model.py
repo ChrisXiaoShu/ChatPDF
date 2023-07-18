@@ -1,10 +1,13 @@
 # create basic AI model class with template model variable and has get_chain and run methods
 from typing import Any
+from chainlit import Message
 from click import prompt
 from langchain import ConversationChain, LLMChain, PromptTemplate
 from langchain.base_language import BaseLanguageModel
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
+from chainlit.lc.agent import run_langchain_agent
+from chainlit.config import config
 
 
 class AIModel:
@@ -53,11 +56,20 @@ Current conversation:
     def get_chain(self, **kwargs: Any) -> Any:
         return LLMChain(llm=self.model, prompt=self.prompt)
     
-    def run(self, conversation_history):
+    async def run(self, conversation_history) -> Message:
         chain = self.get_chain()
-        result = chain.run({ 'history': conversation_history})
-        prompt = self.prompt.format(history=conversation_history)
-        return result, prompt
+        raw_res, output_key = await run_langchain_agent(
+            agent=chain , input_str=conversation_history, use_async=config.code.lc_agent_is_async
+        )
+        
+        if output_key is not None:
+            # Use the output key if provided
+            res = raw_res[output_key]
+        else:
+            # Otherwise, use the raw response
+            res = raw_res
+        # Finally, send the response to the user
+        return Message(author=config.ui.name, content=res)
 
 
 class RecommendAI(AIModel):
@@ -192,6 +204,17 @@ Star fruit juice鹽漬楊桃湯/Pineapple Juice鳳梨汁/Caramel焦糖/Tonic通�
     def get_chain(self, **kwargs: Any) -> Any:
         return LLMChain(llm=self.model, prompt=self.prompt)
     
-    def run(self, preferences):
+    async def run(self, preferences) -> Message:
         chain = self.get_chain()
-        return chain.run({ 'preferences': preferences}), self.prompt.format(preferences=preferences)
+        raw_res, output_key = await run_langchain_agent(
+            agent=chain , input_str=preferences, use_async=config.code.lc_agent_is_async
+        )
+        
+        if output_key is not None:
+            # Use the output key if provided
+            res = raw_res[output_key]
+        else:
+            # Otherwise, use the raw response
+            res = raw_res
+        # Finally, send the response to the user
+        return Message(author=config.ui.name, content=res)

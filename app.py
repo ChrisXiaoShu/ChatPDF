@@ -17,11 +17,11 @@ async def on_action(action):
     
     history = cl.user_session.get("history")
     summary_ai = SummaryPreferenceAI()
-    summary, prompt = summary_ai.run(history)
+    msg = await summary_ai.run(conversation_history=history)
     
-    cl.user_session.set("summary", summary)
+    cl.user_session.set("summary", msg.content)
     
-    await cl.Message(content=summary, prompt=prompt).send()
+    await msg.send()
 
 @cl.action_callback("Recommend Drink!")
 async def on_action(action):
@@ -31,12 +31,13 @@ async def on_action(action):
     if not summary:
         history = cl.user_session.get("history")
         summary_ai = SummaryPreferenceAI()
-        summary = summary_ai.run(history)
+        msg = await summary_ai.run(history)
+        cl.user_session.set("summary", msg.content)
     
     recommend_ai = RecommendAI()
-    recommend, prompt = recommend_ai.run(summary)
+    msg = await recommend_ai.run(preferences=summary)
     
-    await cl.Message(content=recommend, prompt=prompt).send()
+    await msg.send()
 
 @cl.langchain_postprocess
 async def postprocess(output: str):
