@@ -1,15 +1,6 @@
-from sympy import O
-from ai_model import BartenderAI, RecommandAI, SummaryPreferenceAI
+from ai_model import BartenderAI, RecommendAI, SummaryPreferenceAI
 import chainlit as cl
 
-from langchain import ConversationChain, LLMChain, PromptTemplate
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-)
-from langchain.memory import ConversationBufferMemory
 
 @cl.langchain_factory(use_async=True)
 def factory():
@@ -32,7 +23,7 @@ async def on_action(action):
     
     await cl.Message(content=summary, prompt=prompt).send()
 
-@cl.action_callback("Recommand Drink!")
+@cl.action_callback("Recommend Drink!")
 async def on_action(action):
     await action.remove()
     
@@ -42,17 +33,17 @@ async def on_action(action):
         summary_ai = SummaryPreferenceAI()
         summary = summary_ai.run(history)
     
-    recommand_ai = RecommandAI()
-    recommand, prompt = recommand_ai.run(summary)
+    recommend_ai = RecommendAI()
+    recommend, prompt = recommend_ai.run(summary)
     
-    await cl.Message(content=recommand, prompt=prompt).send()
+    await cl.Message(content=recommend, prompt=prompt).send()
 
 @cl.langchain_postprocess
 async def postprocess(output: str):
     # Sending an action button within a chatbot message
     actions = [
         cl.Action(name="Summary Preference!", value="example_value", description="Click me!"),
-        cl.Action(name="Recommand Drink!", value="example_value1", description="Click me1!"),
+        cl.Action(name="Recommend Drink!", value="example_value1", description="Click me1!"),
     ]
     cl.user_session.set("history", output['history'])
     await cl.Message(content=output['response'], actions=actions).send()

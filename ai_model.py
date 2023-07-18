@@ -1,6 +1,4 @@
 # create basic AI model class with template model variable and has get_chain and run methods
-from itertools import chain
-import re
 from typing import Any
 from click import prompt
 from langchain import ConversationChain, LLMChain, PromptTemplate
@@ -62,7 +60,7 @@ Current conversation:
         return result, prompt
 
 
-class RecommandAI(AIModel):
+class RecommendAI(AIModel):
     model = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
     template = """please choice one of the cocktail from the menu below base on the human preference and reply in 繁體中文，請特別注意不要推薦人類不喜歡的酒，且詳細說明原因
 here is human preference:
