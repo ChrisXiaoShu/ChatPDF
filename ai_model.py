@@ -218,3 +218,31 @@ Star fruit juice鹽漬楊桃湯/Pineapple Juice鳳梨汁/Caramel焦糖/Tonic通�
             res = raw_res
         # Finally, send the response to the user
         return Message(author=config.ui.name, content=res)
+
+
+class DetailAI(AIModel):
+    model = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
+    template = """please make a story for the follow drinks in 繁體中文
+drinks:
+{drinks}
+"""
+    
+    prompt = PromptTemplate(template=template, input_variables=["drinks"])
+    
+    def get_chain(self, **kwargs: Any) -> Any:
+        return LLMChain(llm=self.model, prompt=self.prompt)
+    
+    async def run(self, drinks) -> Message:
+        chain = self.get_chain()
+        raw_res, output_key = await run_langchain_agent(
+            agent=chain , input_str=drinks, use_async=config.code.lc_agent_is_async
+        )
+        
+        if output_key is not None:
+            # Use the output key if provided
+            res = raw_res[output_key]
+        else:
+            # Otherwise, use the raw response
+            res = raw_res
+        # Finally, send the response to the user
+        return Message(author=config.ui.name, content=res)

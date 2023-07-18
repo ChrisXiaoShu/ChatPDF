@@ -1,4 +1,4 @@
-from ai_model import BartenderAI, RecommendAI, SummaryPreferenceAI
+from ai_model import BartenderAI, DetailAI, RecommendAI, SummaryPreferenceAI
 import chainlit as cl
 
 
@@ -7,6 +7,7 @@ def factory():
     # Save the conversation history in the user session
     cl.user_session.set("history", "")
     cl.user_session.set("summary", "")
+    cl.user_session.set("recommend", "")
     bartender = BartenderAI()
 
     return bartender.get_chain()
@@ -20,6 +21,16 @@ async def on_action(action):
     msg = await summary_ai.run(conversation_history=history)
     
     cl.user_session.set("summary", msg.content)
+    
+    await msg.send()
+    
+@cl.action_callback("Detail")
+async def on_action(action):
+    await action.remove()
+    
+    recommend = cl.user_session.get("recommend")
+    detail_ai = DetailAI()
+    msg = await detail_ai.run(drinks=recommend)
     
     await msg.send()
 
@@ -36,6 +47,8 @@ async def on_action(action):
     
     recommend_ai = RecommendAI()
     msg = await recommend_ai.run(preferences=summary)
+    cl.user_session.set('recommend', msg.content)
+    msg.actions = [cl.Action(name="Detail", value="example_value2", description="Click me3!")]
     
     await msg.send()
 
