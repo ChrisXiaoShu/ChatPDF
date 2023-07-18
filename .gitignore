@@ -12,3 +12,9 @@
 
 # Ignore .chroma folder
 .chroma
+
+# Ignore .chainlit folder
+.chainlit
+
+# Ignore .DS_store file
+.DS_store
