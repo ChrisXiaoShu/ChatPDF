@@ -73,7 +73,7 @@ Current conversation:
 
 class RecommendAI(AIModel):
     model = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
-    template = """please choice one of the cocktail from the menu below base on the Customer preference and reply in 繁體中文，請特別注意不要推薦人類不喜歡的酒，且詳細說明原因
+    template = """please choice one of the cocktail from the menu below base on the Customer preference and reply in 繁體中文，請特別注意不要推薦人類不喜歡的酒，且詳細說明原因，你的回覆格式必須為：我推薦你喝：(酒款名稱)，因為(原因)
 here is Customer preference:
 {preferences}
 
