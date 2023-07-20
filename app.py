@@ -48,7 +48,9 @@ async def on_action(action):
     
     recommend_ai = RecommendAI()
     msg = await recommend_ai.run(preferences=summary)
-    cl.user_session.set('recommend', msg.content)
+    # extract the recommend drink from the response the drink is in between：and，
+    drink = msg.content[msg.content.find("：")+1:msg.content.find("，")]
+    cl.user_session.set('recommend', drink)
     msg.actions = [cl.Action(name="Detail", value="example_value2", description="Click me3!")]
     
     await msg.send()

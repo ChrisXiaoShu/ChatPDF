@@ -2,8 +2,8 @@
 from enum import Enum
 
 class Role(Enum):
-    AI = "AI"
-    Human = "Human"
+    AI = "BartenderAI"
+    Human = "Customer"
 
 
 def serialize_history(history: list) -> str:
