@@ -1,8 +1,2 @@
-langchain
-pypdf
-openai
-python-dotenv
-chromadb
-tiktoken
-PySimpleGUI==4.56.0
-chainlit==0.5.2
+chainlit
+langchain==0.0.219

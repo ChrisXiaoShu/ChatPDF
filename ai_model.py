@@ -1,7 +1,6 @@
 # create basic AI model class with template model variable and has get_chain and run methods
 from typing import Any
 from chainlit import Message
-from click import prompt
 from langchain import ConversationChain, LLMChain, PromptTemplate
 from langchain.base_language import BaseLanguageModel
 from langchain.chat_models import ChatOpenAI
