@@ -27,11 +27,11 @@ class AIModel:
 class BartenderAI(AIModel):
     model = ChatOpenAI(temperature=0)
 
-    template = """The following is a friendly conversation between a human and an AI. The AI is a professional bartender and help human find a cocktail that suits. AI should guide human in choosing a cocktail that is tailored to its preferences. AI should understand human preferences based on human preferred texture, type of alcohol, taste, or personal characteristics. please don't recommend a particular cocktail to human. AI job is merely understand human preference. And don't ask too complex question make question simple and one at a time. 請用繁體中文與我對答案。 
+    template = """The following is a friendly conversation between a Customer and an BartenderAI. The BartenderAI is a professional bartender and help Customer find a cocktail that suits. AI should guide Customer in choosing a cocktail that is tailored to its preferences. BartenderAI should understand Customer preferences based on Customer preferred texture, type of alcohol, taste, or personal characteristics. please don't recommend a particular cocktail to Customer. AI job is merely understand Customer preference. And don't ask too complex question make question simple and one at a time. 請用繁體中文與我對答案。 
 Current conversation:
 {history}
-Human: {input}
-AI:
+Customer: {input}
+BartenderAI:
 """
 
     prompt = PromptTemplate(template=template, input_variables=["history", "input"])
@@ -45,11 +45,11 @@ AI:
             
 class SummaryPreferenceAI(AIModel):
     model = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
-    template = """please summary the human preference from the following conversation in 繁體中文
+    template = """You're now a professional bartender, and the following is the conversation between the Customer and Bartender, please summary the customer preference from the following conversation in 繁體中文
 Current conversation:
 {history}
 """
-    
+
     prompt = PromptTemplate(template=template, input_variables=["history"])
     
     def get_chain(self, **kwargs: Any) -> Any:
@@ -73,8 +73,8 @@ Current conversation:
 
 class RecommendAI(AIModel):
     model = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
-    template = """please choice one of the cocktail from the menu below base on the human preference and reply in 繁體中文，請特別注意不要推薦人類不喜歡的酒，且詳細說明原因
-here is human preference:
+    template = """please choice one of the cocktail from the menu below base on the Customer preference and reply in 繁體中文，請特別注意不要推薦人類不喜歡的酒，且詳細說明原因
+here is Customer preference:
 {preferences}
 
 here is the menu:
