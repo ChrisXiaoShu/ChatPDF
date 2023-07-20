@@ -1,4 +1,5 @@
 from ai_model import BartenderAI, DetailAI, RecommendAI, SummaryPreferenceAI
+from lib.conversation import Role, add_msg_to_serialized_history
 import chainlit as cl
 
 
@@ -59,5 +60,8 @@ async def postprocess(output: str):
         cl.Action(name="Summary Preference!", value="example_value", description="Click me!"),
         cl.Action(name="Recommend Drink!", value="example_value1", description="Click me1!"),
     ]
-    cl.user_session.set("history", output['history'])
+    history = cl.user_session.get("history")
+    history = add_msg_to_serialized_history(history, Role.Human, output['input'])
+    history = add_msg_to_serialized_history(history, Role.AI, output['response'])
+    cl.user_session.set("history", history)
     await cl.Message(content=output['response'], actions=actions).send()
