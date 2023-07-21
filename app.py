@@ -1,3 +1,4 @@
+from prisma import config
 from ai_model import BartenderAI, DetailAI, RecommendAI, SummaryPreferenceAI
 from lib.conversation import Role, add_msg_to_serialized_history
 import chainlit as cl
@@ -51,7 +52,8 @@ async def on_action(action):
     # extract the recommend drink from the response the drink is in between：and，
     drink = msg.content[msg.content.find("：")+1:msg.content.find("，")]
     cl.user_session.set('recommend', drink)
-    msg.actions = [cl.Action(name="Detail", value="example_value2", description="Click me3!")]
+    if config.run.debug:
+        msg.actions = [cl.Action(name="Detail", value="example_value2", description="Click me3!")]
     
     await msg.send()
 
