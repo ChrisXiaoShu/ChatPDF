@@ -73,7 +73,7 @@ Current conversation:
 
 class RecommendAI(AIModel):
     model = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
-    template = """you are acting as a professional bartender, you know much about the customer preference, and can recommend the right one to your customer. The below is the menu, please choice one of the cocktail based on the customer preference and reply in 繁體中文，the format of your replication should be: 我推薦你喝：(酒款名稱)，因為(原因)
+    template = """you are acting as a professional bartender, you know much about the customer preference, and can recommend the right one to your customer. The below is the menu, please choice one of the cocktail based on the customer preference, elaborate the reason why you recommend and reply in 繁體中文
 here is Customer preference:
 -----------------------
 {preferences}
