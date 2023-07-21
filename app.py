@@ -58,10 +58,14 @@ async def on_action(action):
 @cl.langchain_postprocess
 async def postprocess(output: str):
     # Sending an action button within a chatbot message
-    actions = [
-        cl.Action(name="Summary Preference!", value="example_value", description="Click me!"),
-        cl.Action(name="Recommend Drink!", value="example_value1", description="Click me1!"),
-    ]
+    #check config.run debug if debug mode add summary button else only recommend button
+    actions = [cl.Action(name="Recommend Drink!", value="example_value1", description="Click me2!")]
+    if cl.config.run.debug:
+        actions = [
+            cl.Action(name="Summary Preference!", value="example_value", description="Click me!"),
+            cl.Action(name="Recommend Drink!", value="example_value1", description="Click me2!")
+        ]
+        
     history = cl.user_session.get("history")
     history = add_msg_to_serialized_history(history, Role.Human, output['input'])
     history = add_msg_to_serialized_history(history, Role.AI, output['response'])
